@@ -95,3 +95,6 @@ persist.sys.ssr.enable_debug=0
 persist.sys.ssr.restart_level=3
 persist.sys.qc.sub.rdump.on=1
 
+# Strict Mode
+persist.sys.strictmode.disable=true
+
