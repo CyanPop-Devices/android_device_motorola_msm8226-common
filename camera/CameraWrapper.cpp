@@ -154,8 +154,6 @@ static char *camera_fixup_getparams(int id, const char *settings)
 
     if (get_product_device() == FALCON || get_product_device() == PEREGRINE) {
         if (id == BACK_CAMERA) {
-            params.set(CameraParameters::KEY_QC_SUPPORTED_ISO_MODES,
-                    "auto,ISO_HJR,ISO100,ISO200,ISO400,ISO800,ISO1600");
             params.set(CameraParameters::KEY_QC_SUPPORTED_HFR_SIZES, "1296x728");
             params.set(CameraParameters::KEY_QC_SUPPORTED_VIDEO_HIGH_FRAME_RATE_MODES, "60,off");
         }
@@ -208,21 +206,7 @@ static char *camera_fixup_setparams(int id, const char *settings)
     const char *hfr = params.get(CameraParameters::KEY_QC_VIDEO_HIGH_FRAME_RATE);
     snprintf(videoHfr, sizeof(videoHfr), "%s", hfr ? hfr : "off");
 
-    if (get_product_device() == FALCON || get_product_device() == PEREGRINE) {
-        if (id == BACK_CAMERA) {
-            /*
-             * In some cases the vendor HAL tries to restore an invalid fps range
-             * (10000,15000) causing a crash.
-             */
-            const char *fps = params.get(CameraParameters::KEY_PREVIEW_FPS_RANGE);
-            const char *fpsValues = params.get(CameraParameters::KEY_SUPPORTED_PREVIEW_FPS_RANGE);
-            if (fps != NULL && fpsValues != NULL) {
-                if (!strstr(fpsValues, fps)) {
-                    params.set(CameraParameters::KEY_PREVIEW_FPS_RANGE, "15000,30000");
-                }
-            }
-        }
-    } else if (get_product_device() == TITAN || get_product_device() == THEA) {
+    if (get_product_device() == TITAN || get_product_device() == THEA) {
         const char *sceneMode = params.get(CameraParameters::KEY_SCENE_MODE);
         if (sceneMode != NULL) {
             if (!strcmp(sceneMode, CameraParameters::SCENE_MODE_HDR)) {
